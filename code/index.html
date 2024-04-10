@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur de Temps de Développement</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <h1>Calculateur de Temps de Développement</h1>
+
+    <form id="development-form">
+        <label for="film">Pellicule:</label>
+        <select id="film" name="film" required></select>
+
+        <label for="developer">Révélateur:</label>
+        <select id="developer" name="developer" required></select>
+
+        <button type="button" id="calculate-btn">Calculer</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        $(document).ready(function () {
+            loadOptions('film', 'get_films.php');
+            loadOptions('developer', 'get_developers.php');
+
+            function loadOptions(elementId, dataUrl) {
+                $.ajax({
+                    type: "GET",
+                    url: dataUrl,
+                    dataType: "json",
+                    success: function (data) {
+                        var selectElement = $('#' + elementId);
+                        selectElement.empty(); // Clean actual options
+
+                        $.each(data, function (index, value) {
+                            selectElement.append($('<option>').text(value).attr('value', value));
+                        });
+                    },
+                    error: function () {
+                        console.log("Erreur lors du chargement des options.");
+                    }
+                });
+            }
+
+            $("#calculate-btn").click(function () {
+    // Get datas from form
+    var film = $("#film").val();
+    var developer = $("#developer").val();
+
+    // AJAX query
+    $.ajax({
+        type: "POST",
+        url: "calculate.php",
+        data: {
+            film: film,
+            developer: developer
+        },
+        dataType: "json",
+        success: function (response) {
+            if ("error" in response) {
+                $("#result").text("Erreur : " + response.error);
+            } else {
+                var resultsHtml = "<table><tr><th>Temps de développement</th><th>Dilution</th></tr>";
+
+                // HTML Array
+                $.each(response.results, function (index, result) {
+                    resultsHtml += "<tr><td>" + result.time + "</td><td>" + result.dilution + "</td></tr>";
+                });
+
+                resultsHtml += "</table>";
+
+                // Print array into #result
+                $("#result").html(resultsHtml);
+            }
+        },
+        error: function () {
+            $("#result").text("Erreur lors de la requête AJAX.");
+        }
+    });
+});
+
+        });
+    </script>
+</body>
+</html>

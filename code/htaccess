@@ -1,0 +1,7 @@
+AuthUserFile /homez.374/danstacu/www/test/.htpasswd
+AuthGroupFile /dev/null
+AuthName "Accès Restreint"
+AuthType Basic
+require valid-user
+
+Options +Indexes

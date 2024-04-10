@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page d'Administration</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <h1>Page d'Administration</h1>
+
+    <form id="add-development-form">
+        <label for="film">Pellicule:</label>
+        <select id="film" name="film" required></select>
+
+        <label for="iso">ISO:</label>
+        <select id="iso" name="iso" required></select>
+
+        <label for="developer">Révélateur:</label>
+        <select id="developer" name="developer" required></select>
+
+        <label for="time">Temps de Développement (minutes):</label>
+        <input type="number" id="time" name="time" required>
+
+        <label for="dilution">Dilution:</label>
+        <select id="dilution" name="dilution" required></select>
+
+        <button type="button" id="add-development-btn">Ajouter Temps de Développement</button>
+    </form>
+
+    <script>
+        $(document).ready(function () {
+            loadOptions('film', 'get_films.php');
+            loadOptions('iso', 'get_iso.php');
+            loadOptions('developer', 'get_developers.php');
+            loadOptions('dilution', 'get_dilutions.php');
+
+            function loadOptions(elementId, dataUrl) {
+                $.ajax({
+                    type: "GET",
+                    url: dataUrl,
+                    dataType: "json",
+                    success: function (data) {
+                        var selectElement = $('#' + elementId);
+                        selectElement.empty(); // Clean actual options
+
+                        $.each(data, function (index, value) {
+                            selectElement.append($('<option>').text(value).attr('value', value));
+                        });
+                    },
+                    error: function () {
+                        console.log("Erreur lors du chargement des options.");
+                    }
+                });
+            }
+
+            $("#add-development-btn").click(function () {
+                // Get datas from form
+                var film = $("#film").val();
+                var iso = $("#iso").val();
+                var developer = $("#developer").val();
+                var time = $("#time").val();
+                var dilution = $("#dilution").val();
+
+                // Ajax Amsterdam AFC ;) 
+                $.ajax({
+                    type: "POST",
+                    url: "add_development.php",
+                    data: {
+                        film: film,
+                        iso: iso,
+                        developer: developer,
+                        time: time,
+                        dilution: dilution
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        console.log(response);
+                        alert("Temps de développement ajouté avec succès!");
+                    },
+                    error: function () {
+                        alert("Erreur lors de la requête AJAX.");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
