@@ -27,7 +27,7 @@
     $query->bindParam(':film', $film, PDO::PARAM_STR);
     $query->bindParam(':iso', $iso, PDO::PARAM_INT);
     $query->bindParam(':developer', $developer, PDO::PARAM_STR);
-    $query->bindParam(':time', $time, PDO::PARAM_INT);
+    $query->bindParam(':time', $time, PDO::PARAM_STR);
     $query->bindParam(':dilutionId', $dilutionId, PDO::PARAM_INT);
 
     // Query execution
