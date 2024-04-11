@@ -3,7 +3,7 @@
     include_once 'credentials.php';
 
     // Get datas from form
-    $query = $pdo->query("SELECT name FROM devchart_films where validation=0");
+    $query = $pdo->query("SELECT name FROM devchart_films where validation=0 ORDER BY name ASC");
     $films = $query->fetchAll(PDO::FETCH_COLUMN);
 
     // JSON Format
